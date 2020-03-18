@@ -15,9 +15,9 @@ disable_warnings(InsecureRequestWarning)
 
 ## USER INPUT FOR CUCM
 
-host = "192.168.1.7"
-username = "ucmadministrator"
-password = "H0m3L@b!"
+host = input("Publisher IP:")
+username = input("Username:")
+password = input("Password")
 print("Working...")
 
 wsdl = 'axlsqltoolkit/schema/12.5/AXLAPI.wsdl'
