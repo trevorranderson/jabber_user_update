@@ -18,6 +18,7 @@ disable_warnings(InsecureRequestWarning)
 host = "192.168.1.7"
 username = "ucmadministrator"
 password = "H0m3L@b!"
+print("Working...")
 
 wsdl = 'axlsqltoolkit/schema/11.5/AXLAPI.wsdl'
 location = 'https://{host}:8443/axl/'.format(host=host)
@@ -36,37 +37,6 @@ service = client.create_service(binding, location)
 
 user_import_data = pd.read_excel("User_Import.xlsx")
 
-## ADD CSF DEVICE PER USER
-
-index = 0
-while index < len(user_import_data.index):
-    name = user_import_data.at[index, 'CSFNAME']
-    css = user_import_data.loc[index, 'DEVICECSS']
-    dp = user_import_data.loc[index, 'DEVICEPOOL']
-    phone = {
-        'name': 'CSF' + name,
-        'description': "For Jabber Use",
-        'product': 'Cisco Unified Client Services Framework',
-        'model': 'Cisco Unified Client Services Framework',
-        'class': 'Phone',
-        'protocol': 'SIP',
-        'protocolSide': 'User',
-        'callingSearchSpaceName': css,
-        'devicePoolName': dp,
-        'commonPhoneConfigName': 'Standard Common Phone Profile',
-        'locationName': 'Hub_None',
-        'useTrustedRelayPoint': 'Default',
-        'builtInBridgeStatus': 'Default',
-        'packetCaptureMode': 'None',
-        'certificateOperation': 'No Pending Operation',
-        'deviceMobilityMode': 'Default'
-    }
-    try:
-        service.addPhone(phone)        
-    except:
-        pass
-    index += 1
-    
 ## ADD DN
 
 index = 0
@@ -88,16 +58,74 @@ while index < len(user_import_data.index):
         pass        
     index += 1
 
-## ADD DN TO CSF
+## ADD CSF DEVICE PER USER
 
-
-
+index = 0
+while index < len(user_import_data.index):
+    name = user_import_data.at[index, 'CSFNAME']
+    css = user_import_data.loc[index, 'DEVICECSS']
+    dp = user_import_data.loc[index, 'DEVICEPOOL']
+    dn = user_import_data.at[index, 'DIRECTORYNUMBER']
+    part = user_import_data.at[index, 'PARTITION']
+    phone = {
+        'name': 'CSF' + name,
+        'description': "For Jabber Use",
+        'product': 'Cisco Unified Client Services Framework',
+        'model': 'Cisco Unified Client Services Framework',
+        'class': 'Phone',
+        'protocol': 'SIP',
+        'protocolSide': 'User',
+        'callingSearchSpaceName': css,
+        'devicePoolName': dp,
+        'commonPhoneConfigName': 'Standard Common Phone Profile',
+        'locationName': 'Hub_None',
+        'useTrustedRelayPoint': 'Default',
+        'builtInBridgeStatus': 'Default',
+        'packetCaptureMode': 'None',
+        'certificateOperation': 'No Pending Operation',
+        'deviceMobilityMode': 'Default',
+        'lines': {
+            'line': [
+                {
+                    'index': 1,
+                    'dirn': {
+                        'pattern': dn,
+                        'routePartitionName': part
+                    }
+                }
+            ]
+        }
+    }
+    try:
+        service.addPhone(phone)
+    except:
+        pass        
+    index += 1
+    
 ## CREATE USER
+
+index = 0
+while index < len(user_import_data.index):
+    device = user_import_data.at[index, 'CSFNAME']
+    userid = user_import_data.at[index, 'USER']
+    first = user_import_data.at[index, 'FIRST']
+    last = user_import_data.at[index, 'LAST']
+    pw = user_import_data.at[index, 'PASSWORD']
+    end_user = {
+        'userid': userid,
+        'firstName': first,
+        'lastName': last,
+        'password': pw,
+        'presenceGroupName': 'Standard Presence Group',
+        'associatedDevices': device
+    }
+    service.addUser(end_user)      
+    index += 1
 
 ## UPDATE HOME CLUSTER AND ENABLE FOR IMP
 
-# for user in user_import_data['USER']:
-#     try:
-#         service.updateUser(userid=user, homeCluster=True, imAndPresenceEnable=True)
-#     except:
-#         pass
+for user in user_import_data['USER']:
+    try:
+        service.updateUser(userid=user, homeCluster=True, imAndPresenceEnable=True)
+    except:
+        pass
