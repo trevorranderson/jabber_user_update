@@ -385,7 +385,7 @@ while index < len(user_import_data.index):
             homeCluster= True,
             imAndPresenceEnable = True, 
             associatedGroups=jabber_user)
-
+        
         ## ADD USER FOR TABLET      
 
         elif user_import_data.at[index, 'DEVICETYPE'] == 'TABLET':
@@ -419,6 +419,7 @@ while index < len(user_import_data.index):
             homeCluster= True,
             imAndPresenceEnable = True, 
             associatedGroups=jabber_user)
+        
 
         ## ADD USER FOR IPHONE      
 
@@ -458,7 +459,7 @@ while index < len(user_import_data.index):
             homeCluster= True,
             imAndPresenceEnable = True,
             associatedGroups=jabber_user)
-
+        
         ## ADD USER FOR ANDROID      
 
         elif user_import_data.at[index, 'DEVICETYPE'] == 'ANDROID':
@@ -495,11 +496,21 @@ while index < len(user_import_data.index):
             homeCluster= True,
             imAndPresenceEnable = True, 
             associatedGroups=jabber_user)
-    
+        
 
         ## IF USER EXISTS == UPDATE
 
     elif cucm_user['return']['user']['userid'] == user_import_data.at[index, 'USER']:
+        cucm_device_name = ""
+        if user_import_data.at[index, 'DEVICETYPE'] == 'DESKTOP':
+            cucm_device_name = "CSF" + user_import_data.at[index, 'DEVICENAME']
+        elif user_import_data.at[index, 'DEVICETYPE'] == 'TABLET':
+            cucm_device_name = "TAB" + user_import_data.at[index, 'DEVICENAME']
+        elif user_import_data.at[index, 'DEVICETYPE'] == 'IPHONE':
+            cucm_device_name = "TCT" + user_import_data.at[index, 'DEVICENAME']
+        elif user_import_data.at[index, 'DEVICETYPE'] == 'ANDROID':
+            cucm_device_name = "BOT" + user_import_data.at[index, 'DEVICENAME']
+        
         associated_device = {
             'device': []
         }
