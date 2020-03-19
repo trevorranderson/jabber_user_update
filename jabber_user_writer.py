@@ -19,9 +19,9 @@ disable_warnings(InsecureRequestWarning)
 
 ## USER INPUT FOR CUCM
 
-host = input("Publisher IP: ")
-username = input("Username: ")
-password = getpass("Password: ")
+host = "192.168.1.7"
+username = "ucmadministrator"
+password = "H0m3L@b!"
 print("Working...")
 
 wsdl = 'axlsqltoolkit/schema/12.5/AXLAPI.wsdl'
@@ -328,7 +328,6 @@ while index < len(user_import_data.index):
 
     ## IF DEVICE EXISTS == SKIP
 
-    # NOTHING HAPPENS HERE AT ALL
 
     
 ## CHECK IF USER EXISTS
@@ -496,11 +495,28 @@ while index < len(user_import_data.index):
             homeCluster= True,
             imAndPresenceEnable = True, 
             associatedGroups=jabber_user)
+
+        else:
+            pass
+
+    index += 1
         
 
         ## IF USER EXISTS == UPDATE
 
-    elif cucm_user['return']['user']['userid'] == user_import_data.at[index, 'USER']:
+index = 0
+
+print("User Creation Complete")
+
+while index < len(user_import_data.index):
+
+    cucm_user = "Null"
+    try:
+        cucm_user = service.getUser(userid=user_import_data.at[index, 'USER'])
+    except:
+        pass    
+    
+    if cucm_user['return']['user']['userid'] == user_import_data.at[index, 'USER']:
         cucm_device_name = ""
         if user_import_data.at[index, 'DEVICETYPE'] == 'DESKTOP':
             cucm_device_name = "CSF" + user_import_data.at[index, 'DEVICENAME']
@@ -512,9 +528,30 @@ while index < len(user_import_data.index):
             cucm_device_name = "BOT" + user_import_data.at[index, 'DEVICENAME']
         
         associated_device = {
-            'device': []
+           'device': []
         }
-        associated_device['device'].append(cucm_device_name)
+        
+        try:
+            current_devices = cucm_user['return']['user']['associatedDevices']['device']
+        except:
+            current_devices = ""
+
+        associated_device_list = []
+        if current_devices != "":
+            diff_index = 0
+            while diff_index < 9:
+                for device in current_devices:
+                    current_device = str(device)
+                    associated_device_list.append(current_device)
+                diff_index += 1
+
+        associated_device_list.append(cucm_device_name)
+
+        associated_device_list = list(dict.fromkeys(associated_device_list))
+
+        associated_device['device'].append(associated_device_list)
+
+        print(associated_device)
 
         jabber_user = {
             'userGroup': ['Standard CTI Enabled', 'Standard CCM End Users', 'Standard CTI Allow Control of All Devices']
