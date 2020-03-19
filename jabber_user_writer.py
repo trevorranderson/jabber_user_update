@@ -10,14 +10,18 @@ from urllib3.exceptions import InsecureRequestWarning
 from lxml import etree
 from collections import defaultdict
 import pandas as pd
+import time
+from getpass import getpass
 
 disable_warnings(InsecureRequestWarning)
 
+
+
 ## USER INPUT FOR CUCM
 
-host = input("Publisher IP:")
-username = input("Username:")
-password = input("Password")
+host = input("Publisher IP: ")
+username = input("Username: ")
+password = getpass("Password: ")
 print("Working...")
 
 wsdl = 'axlsqltoolkit/schema/12.5/AXLAPI.wsdl'
@@ -37,6 +41,8 @@ service = client.create_service(binding, location)
 
 user_import_data = pd.read_excel("User_Import.xlsx")
 
+print(user_import_data)
+
 ## CREATE DN
 
 index = 0
@@ -54,11 +60,8 @@ while index < len(user_import_data.index):
         'callForwardBusy': {
             'forwardToVoiceMail': True
         },
-        'callForwardBusy': {
-            'forwardToVoiceMail': True
-        },
         'callForwardBusyInt': {
-            'forwardToVoiceMail': True
+            'forwardToVoiceMail': True 
         },
         'callForwardNoAnswer': {
             'forwardToVoiceMail': True
@@ -89,6 +92,8 @@ while index < len(user_import_data.index):
     except:
         pass       
     index += 1
+    if index > len(user_import_data.index):
+        print("DN's are complete.")
 
 
 ## CHECK IF DEVICE EXISTS
@@ -106,6 +111,8 @@ while index < len(user_import_data.index):
         cucm_device_name = "TCT" + user_import_data.at[index, 'DEVICENAME']
     elif user_import_data.at[index, 'DEVICETYPE'] == 'ANDROID':
         cucm_device_name = "BOT" + user_import_data.at[index, 'DEVICENAME']
+    else:
+        print("Please select an applicable Device Type. ALL CAPS is needed.")
 
     cucm_device_test = "Null"
     try:
@@ -124,13 +131,16 @@ while index < len(user_import_data.index):
         if user_import_data.at[index, 'DEVICETYPE'] == 'DESKTOP':
             name = user_import_data.at[index, 'DEVICENAME']
             css = user_import_data.loc[index, 'DEVICECSS']
-            dp = user_import_data.loc[index, 'DEVICEPOOL']
-            dn = user_import_data.at[index, 'DIRECTORYNUMBER']
+            dp = str(user_import_data.loc[index, 'DEVICEPOOL'])
+            dn = str(user_import_data.at[index, 'DIRECTORYNUMBER'])
             part = user_import_data.at[index, 'PARTITION']
-            desc = user_import_data.at[index, 'DESCRIPTION']
+            desc = str(user_import_data.at[index, 'DESCRIPTION'])
+            last = str(user_import_data.at[index, 'LAST'])
+            extMask = user_import_data.at[index, 'EXTPHONEMASK']
+            phoneDesc = dn + '|' + dp + '|' + desc + " Desktop"
             phone = {
                 'name': 'CSF' + name,
-                'description': "For Jabber Use",
+                'description': phoneDesc,
                 'product': 'Cisco Unified Client Services Framework',
                 'model': 'Cisco Unified Client Services Framework',
                 'class': 'Phone',
@@ -152,7 +162,11 @@ while index < len(user_import_data.index):
                             'dirn': {
                                 'pattern': dn,
                                 'routePartitionName': part
-                            }
+                            },
+                            'label': last + " - " + dn,
+                            'display': desc,
+                            'displayAscii': desc,
+                            'e164Mask': extMask
                         }
                     ]
                 }
@@ -167,13 +181,16 @@ while index < len(user_import_data.index):
         elif user_import_data.at[index, 'DEVICETYPE'] == 'TABLET':
             name = user_import_data.at[index, 'DEVICENAME']
             css = user_import_data.loc[index, 'DEVICECSS']
-            dp = user_import_data.loc[index, 'DEVICEPOOL']
-            dn = user_import_data.at[index, 'DIRECTORYNUMBER']
+            dp = str(user_import_data.loc[index, 'DEVICEPOOL'])
+            dn = str(user_import_data.at[index, 'DIRECTORYNUMBER'])
             part = user_import_data.at[index, 'PARTITION']
-            desc = user_import_data.at[index, 'DESCRIPTION']
+            desc = str(user_import_data.at[index, 'DESCRIPTION'])
+            last = str(user_import_data.at[index, 'LAST'])
+            extMask = user_import_data.at[index, 'EXTPHONEMASK']
+            phoneDesc = dn + '|' + dp + '|' + desc + " Tablet"
             phone = {
                 'name': 'TAB' + name,
-                'description': "For Jabber Use - Tablet",
+                'description': phoneDesc,
                 'product': 'Cisco Jabber for Tablet',
                 'model': 'Cisco Jabber for Tablet',
                 'class': 'Phone',
@@ -195,28 +212,34 @@ while index < len(user_import_data.index):
                             'dirn': {
                                 'pattern': dn,
                                 'routePartitionName': part
-                            }
+                            },
+                            'label': last + " - " + dn,
+                            'display': desc,
+                            'displayAscii': desc,
+                            'e164Mask': extMask
                         }
                     ]
                 }
             }
-            try:
-                service.addPhone(phone)
-            except:
-                pass
+
+            service.addPhone(phone)
+
 
         ## ADD DEVICE FOR IPHONE
 
         elif user_import_data.at[index, 'DEVICETYPE'] == 'IPHONE':
             name = user_import_data.at[index, 'DEVICENAME']
             css = user_import_data.loc[index, 'DEVICECSS']
-            dp = user_import_data.loc[index, 'DEVICEPOOL']
-            dn = user_import_data.at[index, 'DIRECTORYNUMBER']
+            dp = str(user_import_data.loc[index, 'DEVICEPOOL'])
+            dn = str(user_import_data.at[index, 'DIRECTORYNUMBER'])
             part = user_import_data.at[index, 'PARTITION']
-            desc = user_import_data.at[index, 'DESCRIPTION']
+            desc = str(user_import_data.at[index, 'DESCRIPTION'])
+            last = str(user_import_data.at[index, 'LAST'])
+            extMask = user_import_data.at[index, 'EXTPHONEMASK']
+            phoneDesc = dn + '|' + dp + '|' + desc + " iPhone"
             phone = {
                 'name': 'TCT' + name,
-                'description': "For Jabber Use - iPhone",
+                'description': phoneDesc,
                 'product': 'Cisco Dual Mode for iPhone',
                 'model': 'Cisco Dual Mode for iPhone',
                 'class': 'Phone',
@@ -238,29 +261,35 @@ while index < len(user_import_data.index):
                             'dirn': {
                                 'pattern': dn,
                                 'routePartitionName': part
-                            }
+                            },
+                            'label': last + " - " + dn,
+                            'display': desc,
+                            'displayAscii': desc,
+                            'e164Mask': extMask
                         }
                     ]
                 }
             }
 
-            try:
-                service.addPhone(phone)
-            except:
-                pass
+
+            service.addPhone(phone)
+
 
         ## ADD DEVICE FOR ANDROID
 
         elif user_import_data.at[index, 'DEVICETYPE'] == 'ANDROID':
             name = user_import_data.at[index, 'DEVICENAME']
             css = user_import_data.loc[index, 'DEVICECSS']
-            dp = user_import_data.loc[index, 'DEVICEPOOL']
-            dn = user_import_data.at[index, 'DIRECTORYNUMBER']
+            dp = str(user_import_data.loc[index, 'DEVICEPOOL'])
+            dn = str(user_import_data.at[index, 'DIRECTORYNUMBER'])
             part = user_import_data.at[index, 'PARTITION']
-            desc = user_import_data.at[index, 'DESCRIPTION']
+            desc = str(user_import_data.at[index, 'DESCRIPTION'])
+            last = str(user_import_data.at[index, 'LAST'])
+            extMask = user_import_data.at[index, 'EXTPHONEMASK']
+            phoneDesc = dn + '|' + dp + '|' + desc + " Android"
             phone = {
                 'name': 'BOT' + name,
-                'description': "For Jabber Use - Android",
+                'description': phoneDesc,
                 'product': 'Cisco Dual Mode for Android',
                 'model': 'Cisco Dual Mode for Android',
                 'class': 'Phone',
@@ -282,16 +311,18 @@ while index < len(user_import_data.index):
                             'dirn': {
                                 'pattern': dn,
                                 'routePartitionName': part
-                            }
+                            },
+                            'label': last + " - " + dn,
+                            'display': desc,
+                            'displayAscii': desc,
+                            'e164Mask': extMask
                         }
                     ]
                 }
             }
 
-            try:
-                service.addPhone(phone)
-            except:
-                pass
+            service.addPhone(phone)
+
 
     index += 1
 
@@ -302,7 +333,10 @@ while index < len(user_import_data.index):
     
 ## CHECK IF USER EXISTS
 
+
 index = 0
+
+print("Devices Complete")
 
 while index < len(user_import_data.index):
     cucm_user = "Null"
@@ -330,10 +364,10 @@ while index < len(user_import_data.index):
             first = user_import_data.at[index, 'FIRST']
             last = user_import_data.at[index, 'LAST']
             pw = user_import_data.at[index, 'PASSWORD']
-            try:
-                dn = int(user_import_data.at[index, 'DIRECTORYNUMBER'])
-            except:
-                pass
+            dn = user_import_data.at[index, 'DIRECTORYNUMBER']
+            jabber_user = {
+            'userGroup': ['Standard CTI Enabled', 'Standard CCM End Users', 'Standard CTI Allow Control of All Devices']}
+            
             end_user = {
                 'userid': userid,
                 'firstName': first,
@@ -341,16 +375,20 @@ while index < len(user_import_data.index):
                 'password': pw,
                 'telephoneNumber': dn,
                 'presenceGroupName': 'Standard Presence Group',
-                'associatedDevices': associated_device
+                'associatedDevices': associated_device,
                     }
-            try:
-                service.addUser(end_user)
-            except:
-                pass
+
+            service.addUser(end_user)
+
+            service.updateUser(
+            userid = user_import_data.at[index, 'USER'],
+            homeCluster= True,
+            imAndPresenceEnable = True, 
+            associatedGroups=jabber_user)
 
         ## ADD USER FOR TABLET      
 
-        if user_import_data.at[index, 'DEVICETYPE'] == 'TABLET':
+        elif user_import_data.at[index, 'DEVICETYPE'] == 'TABLET':
             device = user_import_data.at[index, 'DEVICENAME']
             associated_device = {
                 'device': []
@@ -361,6 +399,9 @@ while index < len(user_import_data.index):
             last = user_import_data.at[index, 'LAST']
             pw = user_import_data.at[index, 'PASSWORD']
             dn = user_import_data.at[index, 'DIRECTORYNUMBER']
+            jabber_user = {
+            'userGroup': ['Standard CTI Enabled', 'Standard CCM End Users', 'Standard CTI Allow Control of All Devices']}
+            
             end_user = {
                 'userid': userid,
                 'firstName': first,
@@ -370,14 +411,18 @@ while index < len(user_import_data.index):
                 'presenceGroupName': 'Standard Presence Group',
                 'associatedDevices': associated_device
                     }
-            try:
-                service.addUser(end_user)
-            except:
-                pass
+ 
+            service.addUser(end_user)
+
+            service.updateUser(
+            userid = user_import_data.at[index, 'USER'],
+            homeCluster= True,
+            imAndPresenceEnable = True, 
+            associatedGroups=jabber_user)
 
         ## ADD USER FOR IPHONE      
 
-        if user_import_data.at[index, 'DEVICETYPE'] == 'IPHONE':
+        elif user_import_data.at[index, 'DEVICETYPE'] == 'IPHONE':
             device = user_import_data.at[index, 'DEVICENAME']
             associated_device = {
                 'device': []
@@ -391,6 +436,9 @@ while index < len(user_import_data.index):
                 dn = int(user_import_data.at[index, 'DIRECTORYNUMBER'])
             except:
                 pass
+            jabber_user = {
+            'userGroup': ['Standard CTI Enabled', 'Standard CCM End Users', 'Standard CTI Allow Control of All Devices']}
+            
             end_user = {
                 'userid': userid,
                 'firstName': first,
@@ -405,9 +453,15 @@ while index < len(user_import_data.index):
             except:
                 pass
 
+            service.updateUser(
+            userid = user_import_data.at[index, 'USER'], 
+            homeCluster= True,
+            imAndPresenceEnable = True,
+            associatedGroups=jabber_user)
+
         ## ADD USER FOR ANDROID      
 
-        if user_import_data.at[index, 'DEVICETYPE'] == 'ANDROID':
+        elif user_import_data.at[index, 'DEVICETYPE'] == 'ANDROID':
             device = user_import_data.at[index, 'DEVICENAME']
             associated_device = {
                 'device': []
@@ -421,6 +475,10 @@ while index < len(user_import_data.index):
                 dn = int(user_import_data.at[index, 'DIRECTORYNUMBER'])
             except:
                 pass
+            
+            jabber_user = {
+            'userGroup': ['Standard CTI Enabled', 'Standard CCM End Users', 'Standard CTI Allow Control of All Devices']
+        }
             end_user = {
                 'userid': userid,
                 'firstName': first,
@@ -428,12 +486,15 @@ while index < len(user_import_data.index):
                 'password': pw,
                 'telephoneNumber': dn,
                 'presenceGroupName': 'Standard Presence Group',
-                'associatedDevices': associated_device
-                    }
-            try:
-                service.addUser(end_user)
-            except:
-                pass
+                'associatedDevices': associated_device}
+        
+            service.addUser(end_user)
+
+            service.updateUser(
+            userid = user_import_data.at[index, 'USER'],
+            homeCluster= True,
+            imAndPresenceEnable = True, 
+            associatedGroups=jabber_user)
     
 
         ## IF USER EXISTS == UPDATE
@@ -442,7 +503,7 @@ while index < len(user_import_data.index):
         associated_device = {
             'device': []
         }
-        associated_device['device'].append('CSF' + user_import_data.at[index, 'DEVICENAME'])
+        associated_device['device'].append(cucm_device_name)
 
         jabber_user = {
             'userGroup': ['Standard CTI Enabled', 'Standard CCM End Users', 'Standard CTI Allow Control of All Devices']
@@ -461,4 +522,4 @@ while index < len(user_import_data.index):
 
 print("Success!")
 
-print("Press Enter to Exit...")
+time.sleep(30)
