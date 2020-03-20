@@ -19,12 +19,31 @@ disable_warnings(InsecureRequestWarning)
 
 ## USER INPUT FOR CUCM
 
-host = "192.168.1.7"
-username = "ucmadministrator"
-password = "H0m3L@b!"
+host = input("Publisher IP: ")
+username = input("Username: ")
+password = getpass("Password: ")
+impquestion = input("Enable IMP? (Yes or No): ")
+impanswer = impquestion.upper()
+versionquestion = input("Version (xx.x): ")
+versionanswer = versionquestion.upper()
+#owneruserquestion = input("Owner User ID? (Yes or No): ")
+#owneruseranswer = owneruserquestion.upper()
 print("Working...")
 
-wsdl = 'axlsqltoolkit/schema/12.5/AXLAPI.wsdl'
+wsdl = ''
+if versionanswer == "10.0":
+    wsdl = 'axlsqltoolkit/schema/10.0/AXLAPI.wsdl'
+elif versionanswer == "10.5":
+    wsdl = 'axlsqltoolkit/schema/10.5/AXLAPI.wsdl'
+elif versionanswer == "11.0":
+    wsdl = 'axlsqltoolkit/schema/11.0/AXLAPI.wsdl'
+elif versionanswer == "11.5":
+    wsdl = 'axlsqltoolkit/schema/11.5/AXLAPI.wsdl'
+elif versionanswer == "12.0":
+    wsdl = 'axlsqltoolkit/schema/12.0/AXLAPI.wsdl'
+elif versionanswer == "12.5":
+    wsdl = 'axlsqltoolkit/schema/12.5/AXLAPI.wsdl'
+
 location = 'https://{host}:8443/axl/'.format(host=host)
 binding = "{http://www.cisco.com/AXLAPIService/}AXLAPIBinding"
 
@@ -339,16 +358,20 @@ print("Devices Complete")
 
 while index < len(user_import_data.index):
     cucm_user = "Null"
+    
     try:
         cucm_user = service.getUser(userid=user_import_data.at[index, 'USER'])
     except:
         pass
+
+    cucm_user_upper = cucm_user.upper()
+
     
-    
+ 
 
     ## IF USER DOES NOT EXIST == CREATE
         
-    if cucm_user == "Null" or cucm_user['return']['user']['userid'] != user_import_data.at[index, 'USER'] :
+    if cucm_user_upper == "NULL" or cucm_user['return']['user']['userid'] != user_import_data.at[index, 'USER'] :
         print(user_import_data.at[index, 'USER'] + " could not be found. User will be created.")
 
         ## ADD USER FOR DESKTOP      
@@ -376,14 +399,23 @@ while index < len(user_import_data.index):
                 'presenceGroupName': 'Standard Presence Group',
                 'associatedDevices': associated_device,
                     }
+            try:
+                service.addUser(end_user)
+            except:
+                print("User " + userid + " failed to add. Check spreadsheet.")
 
-            service.addUser(end_user)
-
-            service.updateUser(
-            userid = user_import_data.at[index, 'USER'],
-            homeCluster= True,
-            imAndPresenceEnable = True, 
-            associatedGroups=jabber_user)
+            if impanswer == "YES":
+                service.updateUser(
+                userid = user_import_data.at[index, 'USER'],
+                homeCluster= True,
+                imAndPresenceEnable = True, 
+                associatedGroups=jabber_user)
+            else:
+                service.updateUser(
+                userid = user_import_data.at[index, 'USER'],
+                homeCluster= False,
+                imAndPresenceEnable = False, 
+                associatedGroups=jabber_user)
         
         ## ADD USER FOR TABLET      
 
@@ -411,13 +443,23 @@ while index < len(user_import_data.index):
                 'associatedDevices': associated_device
                     }
  
-            service.addUser(end_user)
+            try:
+                service.addUser(end_user)
+            except:
+                print("User " + userid + " failed to add. Check spreadsheet.")
 
-            service.updateUser(
-            userid = user_import_data.at[index, 'USER'],
-            homeCluster= True,
-            imAndPresenceEnable = True, 
-            associatedGroups=jabber_user)
+            if impanswer == "YES":
+                service.updateUser(
+                userid = user_import_data.at[index, 'USER'],
+                homeCluster= True,
+                imAndPresenceEnable = True, 
+                associatedGroups=jabber_user)
+            else:
+                service.updateUser(
+                userid = user_import_data.at[index, 'USER'],
+                homeCluster= True,
+                imAndPresenceEnable = False, 
+                associatedGroups=jabber_user)
         
 
         ## ADD USER FOR IPHONE      
@@ -451,13 +493,20 @@ while index < len(user_import_data.index):
             try:
                 service.addUser(end_user)
             except:
-                pass
+                print("User " + userid + " failed to add. Check spreadsheet.")
 
-            service.updateUser(
-            userid = user_import_data.at[index, 'USER'], 
-            homeCluster= True,
-            imAndPresenceEnable = True,
-            associatedGroups=jabber_user)
+            if impanswer == "YES":
+                service.updateUser(
+                userid = user_import_data.at[index, 'USER'],
+                homeCluster= True,
+                imAndPresenceEnable = True, 
+                associatedGroups=jabber_user)
+            else:
+                service.updateUser(
+                userid = user_import_data.at[index, 'USER'],
+                homeCluster= True,
+                imAndPresenceEnable = False, 
+                associatedGroups=jabber_user)
         
         ## ADD USER FOR ANDROID      
 
@@ -488,13 +537,23 @@ while index < len(user_import_data.index):
                 'presenceGroupName': 'Standard Presence Group',
                 'associatedDevices': associated_device}
         
-            service.addUser(end_user)
+            try:
+                service.addUser(end_user)
+            except:
+                print("User " + userid + " failed to add. Check spreadsheet.")
 
-            service.updateUser(
-            userid = user_import_data.at[index, 'USER'],
-            homeCluster= True,
-            imAndPresenceEnable = True, 
-            associatedGroups=jabber_user)
+            if impanswer == "YES":
+                service.updateUser(
+                userid = user_import_data.at[index, 'USER'],
+                homeCluster= True,
+                imAndPresenceEnable = True, 
+                associatedGroups=jabber_user)
+            else:
+                service.updateUser(
+                userid = user_import_data.at[index, 'USER'],
+                homeCluster= True,
+                imAndPresenceEnable = False, 
+                associatedGroups=jabber_user)
 
         else:
             pass
@@ -516,6 +575,8 @@ while index < len(user_import_data.index):
     except:
         pass    
     
+    #print(cucm_user)
+
     if cucm_user['return']['user']['userid'] == user_import_data.at[index, 'USER']:
         cucm_device_name = ""
         if user_import_data.at[index, 'DEVICETYPE'] == 'DESKTOP':
@@ -536,22 +597,15 @@ while index < len(user_import_data.index):
         except:
             current_devices = ""
 
-        associated_device_list = []
         if current_devices != "":
-            diff_index = 0
-            while diff_index < 9:
-                for device in current_devices:
-                    current_device = str(device)
-                    associated_device_list.append(current_device)
-                diff_index += 1
+            for device in current_devices:
+                current_device = str(device)
+                associated_device['device'].append(current_device)
+ 
+        #Add our new device to the associated device list
 
-        associated_device_list.append(cucm_device_name)
+        associated_device['device'].append(cucm_device_name)
 
-        associated_device_list = list(dict.fromkeys(associated_device_list))
-
-        associated_device['device'].append(associated_device_list)
-
-        print(associated_device)
 
         jabber_user = {
             'userGroup': ['Standard CTI Enabled', 'Standard CCM End Users', 'Standard CTI Allow Control of All Devices']
@@ -559,12 +613,22 @@ while index < len(user_import_data.index):
 
         print(user_import_data.at[index, 'USER'] + " was already in CUCM. User will be updated with device and roles.")
 
-        service.updateUser(
-            userid = user_import_data.at[index, 'USER'], 
-            associatedDevices=associated_device,
-            homeCluster= True,
-            imAndPresenceEnable = True,
-            associatedGroups=jabber_user)
+        
+        if impanswer == "YES":
+            service.updateUser(
+                userid = user_import_data.at[index, 'USER'], 
+                associatedDevices=associated_device,
+                homeCluster= True,
+                imAndPresenceEnable = True,
+                associatedGroups=jabber_user)
+        else:
+            service.updateUser(
+                userid = user_import_data.at[index, 'USER'], 
+                associatedDevices=associated_device,
+                homeCluster= True,
+                imAndPresenceEnable = False,
+                associatedGroups=jabber_user)
+
 
     index += 1
 
