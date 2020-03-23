@@ -68,6 +68,10 @@ index = 0
 while index < len(user_import_data.index):
     dn = user_import_data.at[index, 'DIRECTORYNUMBER']
     dn2 = user_import_data.at[index, 'DIRECTORYNUMBER2']
+    dn3 = user_import_data.at[index, 'DIRECTORYNUMBER3']
+    dn4 = user_import_data.at[index, 'DIRECTORYNUMBER4']
+    dn5 = user_import_data.at[index, 'DIRECTORYNUMBER5']
+    dn6 = user_import_data.at[index, 'DIRECTORYNUMBER6']
     desc = user_import_data.at[index, 'DESCRIPTION']
     part = user_import_data.at[index, 'PARTITION']
     line = {
@@ -112,9 +116,7 @@ while index < len(user_import_data.index):
     except:
         pass
      
-    if dn2 == "0":
-        pass
-    elif dn2 != '0':
+    if dn2 != '0':
         line2 = {
         'pattern': dn2,
         'description': desc,
@@ -153,7 +155,172 @@ while index < len(user_import_data.index):
         try:
             service.addLine(line2)
         except:
-            pass 
+            pass
+
+    if dn3 != '0':
+        line3 = {
+        'pattern': dn3,
+        'description': desc,
+        'usage': 'Device',
+        'routePartitionName': part,
+        'alertingName': desc,
+        'asciiAlertingName': desc,
+        'callForwardBusy': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardBusyInt': {
+            'forwardToVoiceMail': True 
+        },
+        'callForwardNoAnswer': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardNoAnswerInt': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardNoCoverage': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardNoCoverageInt': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardOnFailure': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardNotRegistered': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardNotRegisteredInt': {
+            'forwardToVoiceMail': True
+        },
+        }
+        try:
+            service.addLine(line3)
+        except:
+            pass
+
+
+    if dn4 != '0':
+        line4 = {
+        'pattern': dn4,
+        'description': desc,
+        'usage': 'Device',
+        'routePartitionName': part,
+        'alertingName': desc,
+        'asciiAlertingName': desc,
+        'callForwardBusy': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardBusyInt': {
+            'forwardToVoiceMail': True 
+        },
+        'callForwardNoAnswer': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardNoAnswerInt': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardNoCoverage': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardNoCoverageInt': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardOnFailure': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardNotRegistered': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardNotRegisteredInt': {
+            'forwardToVoiceMail': True
+        },
+        }
+        try:
+            service.addLine(line4)
+        except:
+            pass
+
+    if dn5 != '0':
+        line5 = {
+        'pattern': dn5,
+        'description': desc,
+        'usage': 'Device',
+        'routePartitionName': part,
+        'alertingName': desc,
+        'asciiAlertingName': desc,
+        'callForwardBusy': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardBusyInt': {
+            'forwardToVoiceMail': True 
+        },
+        'callForwardNoAnswer': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardNoAnswerInt': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardNoCoverage': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardNoCoverageInt': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardOnFailure': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardNotRegistered': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardNotRegisteredInt': {
+            'forwardToVoiceMail': True
+        },
+        }
+        try:
+            service.addLine(line5)
+        except:
+            pass
+
+    if dn6 != '0':
+        line6 = {
+        'pattern': dn6,
+        'description': desc,
+        'usage': 'Device',
+        'routePartitionName': part,
+        'alertingName': desc,
+        'asciiAlertingName': desc,
+        'callForwardBusy': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardBusyInt': {
+            'forwardToVoiceMail': True 
+        },
+        'callForwardNoAnswer': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardNoAnswerInt': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardNoCoverage': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardNoCoverageInt': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardOnFailure': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardNotRegistered': {
+            'forwardToVoiceMail': True
+        },
+        'callForwardNotRegisteredInt': {
+            'forwardToVoiceMail': True
+        },
+        }
+        try:
+            service.addLine(line6)
+        except:
+            pass
 
           
     index += 1
@@ -205,13 +372,16 @@ while index < len(user_import_data.index):
             dp = str(user_import_data.loc[index, 'DEVICEPOOL'])
             dn = str(user_import_data.at[index, 'DIRECTORYNUMBER'])
             dn2 = str(user_import_data.at[index, 'DIRECTORYNUMBER2'])
-            print(dn2)
+            dn3 = str(user_import_data.at[index, 'DIRECTORYNUMBER3'])
+            dn4 = str(user_import_data.at[index, 'DIRECTORYNUMBER4'])
+            dn5 = str(user_import_data.at[index, 'DIRECTORYNUMBER5'])
+            dn6 = str(user_import_data.at[index, 'DIRECTORYNUMBER6'])
             part = user_import_data.at[index, 'PARTITION']
             desc = str(user_import_data.at[index, 'DESCRIPTION'])
             last = str(user_import_data.at[index, 'LAST'])
             extMask = user_import_data.at[index, 'EXTPHONEMASK']
             phoneDesc = dn + '|' + dp + '|' + desc + " Desktop"
-            if dn2 == "0":
+            if dn2 != "0" and dn3 != "0" and dn4 != "0" and dn5 != "0" and dn6 != "0":
                 phone = {
                 'name': 'CSF' + name,
                 'description': phoneDesc,
@@ -241,13 +411,275 @@ while index < len(user_import_data.index):
                             'display': desc,
                             'displayAscii': desc,
                             'e164Mask': extMask
+                        },
+                        {
+                            'index': 2,
+                            'dirn': {
+                                'pattern': dn2,
+                                'routePartitionName': part
+                            },
+                            'label': last + " - " + dn,
+                            'display': desc,
+                            'displayAscii': desc,
+                            'e164Mask': extMask
+                        },
+                        {
+                            'index': 3,
+                            'dirn': {
+                                'pattern': dn3,
+                                'routePartitionName': part
+                            },
+                            'label': last + " - " + dn,
+                            'display': desc,
+                            'displayAscii': desc,
+                            'e164Mask': extMask
+                        },
+                        {
+                            'index': 4,
+                            'dirn': {
+                                'pattern': dn4,
+                                'routePartitionName': part
+                            },
+                            'label': last + " - " + dn,
+                            'display': desc,
+                            'displayAscii': desc,
+                            'e164Mask': extMask
+                        },
+                        {
+                            'index': 5,
+                            'dirn': {
+                                'pattern': dn5,
+                                'routePartitionName': part
+                            },
+                            'label': last + " - " + dn,
+                            'display': desc,
+                            'displayAscii': desc,
+                            'e164Mask': extMask
+                        },
+                        {
+                            'index': 6,
+                            'dirn': {
+                                'pattern': dn6,
+                                'routePartitionName': part
+                            },
+                            'label': last + " - " + dn,
+                            'display': desc,
+                            'displayAscii': desc,
+                            'e164Mask': extMask
                         }
                     ]
+                    
+                }
+            }
+            
+            elif dn2 != "0" and dn3 != "0" and dn4 != "0" and dn5 != "0":
+                phone = {
+                'name': 'CSF' + name,
+                'description': phoneDesc,
+                'product': 'Cisco Unified Client Services Framework',
+                'model': 'Cisco Unified Client Services Framework',
+                'class': 'Phone',
+                'protocol': 'SIP',
+                'protocolSide': 'User',
+                'callingSearchSpaceName': css,
+                'devicePoolName': dp,
+                'commonPhoneConfigName': 'Standard Common Phone Profile',
+                'locationName': 'Hub_None',
+                'useTrustedRelayPoint': 'Default',
+                'builtInBridgeStatus': 'Default',
+                'packetCaptureMode': 'None',
+                'certificateOperation': 'No Pending Operation',
+                'deviceMobilityMode': 'Default',
+                'lines': {
+                    'line': [
+                        {
+                            'index': 1,
+                            'dirn': {
+                                'pattern': dn,
+                                'routePartitionName': part
+                            },
+                            'label': last + " - " + dn,
+                            'display': desc,
+                            'displayAscii': desc,
+                            'e164Mask': extMask
+                        },
+                        {
+                            'index': 2,
+                            'dirn': {
+                                'pattern': dn2,
+                                'routePartitionName': part
+                            },
+                            'label': last + " - " + dn,
+                            'display': desc,
+                            'displayAscii': desc,
+                            'e164Mask': extMask
+                        },
+                        {
+                            'index': 3,
+                            'dirn': {
+                                'pattern': dn3,
+                                'routePartitionName': part
+                            },
+                            'label': last + " - " + dn,
+                            'display': desc,
+                            'displayAscii': desc,
+                            'e164Mask': extMask
+                        },
+                        {
+                            'index': 4,
+                            'dirn': {
+                                'pattern': dn4,
+                                'routePartitionName': part
+                            },
+                            'label': last + " - " + dn,
+                            'display': desc,
+                            'displayAscii': desc,
+                            'e164Mask': extMask
+                        },
+                        {
+                            'index': 5,
+                            'dirn': {
+                                'pattern': dn5,
+                                'routePartitionName': part
+                            },
+                            'label': last + " - " + dn,
+                            'display': desc,
+                            'displayAscii': desc,
+                            'e164Mask': extMask
+                        }
+                    ]
+                    
+                }
+            }
+            
+            elif dn2 != "0" and dn3 != "0" and dn4 != "0":
+                phone = {
+                'name': 'CSF' + name,
+                'description': phoneDesc,
+                'product': 'Cisco Unified Client Services Framework',
+                'model': 'Cisco Unified Client Services Framework',
+                'class': 'Phone',
+                'protocol': 'SIP',
+                'protocolSide': 'User',
+                'callingSearchSpaceName': css,
+                'devicePoolName': dp,
+                'commonPhoneConfigName': 'Standard Common Phone Profile',
+                'locationName': 'Hub_None',
+                'useTrustedRelayPoint': 'Default',
+                'builtInBridgeStatus': 'Default',
+                'packetCaptureMode': 'None',
+                'certificateOperation': 'No Pending Operation',
+                'deviceMobilityMode': 'Default',
+                'lines': {
+                    'line': [
+                        {
+                            'index': 1,
+                            'dirn': {
+                                'pattern': dn,
+                                'routePartitionName': part
+                            },
+                            'label': last + " - " + dn,
+                            'display': desc,
+                            'displayAscii': desc,
+                            'e164Mask': extMask
+                        },
+                        {
+                            'index': 2,
+                            'dirn': {
+                                'pattern': dn2,
+                                'routePartitionName': part
+                            },
+                            'label': last + " - " + dn,
+                            'display': desc,
+                            'displayAscii': desc,
+                            'e164Mask': extMask
+                        },
+                        {
+                            'index': 3,
+                            'dirn': {
+                                'pattern': dn3,
+                                'routePartitionName': part
+                            },
+                            'label': last + " - " + dn,
+                            'display': desc,
+                            'displayAscii': desc,
+                            'e164Mask': extMask
+                        },
+                        {
+                            'index': 4,
+                            'dirn': {
+                                'pattern': dn4,
+                                'routePartitionName': part
+                            },
+                            'label': last + " - " + dn,
+                            'display': desc,
+                            'displayAscii': desc,
+                            'e164Mask': extMask
+                        }
+                    ]
+                    
+                }
+            }
+
+            elif dn2 != "0" and dn3 != "0":
+                phone = {
+                'name': 'CSF' + name,
+                'description': phoneDesc,
+                'product': 'Cisco Unified Client Services Framework',
+                'model': 'Cisco Unified Client Services Framework',
+                'class': 'Phone',
+                'protocol': 'SIP',
+                'protocolSide': 'User',
+                'callingSearchSpaceName': css,
+                'devicePoolName': dp,
+                'commonPhoneConfigName': 'Standard Common Phone Profile',
+                'locationName': 'Hub_None',
+                'useTrustedRelayPoint': 'Default',
+                'builtInBridgeStatus': 'Default',
+                'packetCaptureMode': 'None',
+                'certificateOperation': 'No Pending Operation',
+                'deviceMobilityMode': 'Default',
+                'lines': {
+                    'line': [
+                        {
+                            'index': 1,
+                            'dirn': {
+                                'pattern': dn,
+                                'routePartitionName': part
+                            },
+                            'label': last + " - " + dn,
+                            'display': desc,
+                            'displayAscii': desc,
+                            'e164Mask': extMask
+                        },
+                        {
+                            'index': 2,
+                            'dirn': {
+                                'pattern': dn2,
+                                'routePartitionName': part
+                            },
+                            'label': last + " - " + dn,
+                            'display': desc,
+                            'displayAscii': desc,
+                            'e164Mask': extMask
+                        },
+                        {
+                            'index': 3,
+                            'dirn': {
+                                'pattern': dn3,
+                                'routePartitionName': part
+                            },
+                            'label': last + " - " + dn,
+                            'display': desc,
+                            'displayAscii': desc,
+                            'e164Mask': extMask
+                        }
+                    ]
+                    
                 }
             }
 
             elif dn2 != "0":
-                #user_import_data['DIRECTORYNUMBER2'] = user_import_data['DIRECTORYNUMBER2'].astype(int)
                 phone = {
                 'name': 'CSF' + name,
                 'description': phoneDesc,
@@ -293,7 +725,43 @@ while index < len(user_import_data.index):
                     
                 }
             }
-
+            
+            elif dn2 == "0":
+                phone = {
+                'name': 'CSF' + name,
+                'description': phoneDesc,
+                'product': 'Cisco Unified Client Services Framework',
+                'model': 'Cisco Unified Client Services Framework',
+                'class': 'Phone',
+                'protocol': 'SIP',
+                'protocolSide': 'User',
+                'callingSearchSpaceName': css,
+                'devicePoolName': dp,
+                'commonPhoneConfigName': 'Standard Common Phone Profile',
+                'locationName': 'Hub_None',
+                'useTrustedRelayPoint': 'Default',
+                'builtInBridgeStatus': 'Default',
+                'packetCaptureMode': 'None',
+                'certificateOperation': 'No Pending Operation',
+                'deviceMobilityMode': 'Default',
+                'lines': {
+                    'line': [
+                        {
+                            'index': 1,
+                            'dirn': {
+                                'pattern': dn,
+                                'routePartitionName': part
+                            },
+                            'label': last + " - " + dn,
+                            'display': desc,
+                            'displayAscii': desc,
+                            'e164Mask': extMask
+                        }
+                    ]
+                }
+            }     
+        
+           
             service.addPhone(phone)
 
 
@@ -737,6 +1205,7 @@ while index < len(user_import_data.index):
                 homeCluster= True,
                 imAndPresenceEnable = False,
                 associatedGroups=jabber_user)
+
 
     index += 1
 
