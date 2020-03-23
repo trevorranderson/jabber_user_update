@@ -642,6 +642,17 @@ while index < len(user_import_data.index):
                 imAndPresenceEnable = False,
                 associatedGroups=jabber_user)
 
+        ## UPDATE PHONE WITH OWNER USER ID
+
+        print("Updating Owner User ID")
+
+        service.updatePhone(
+            name=cucm_device_name,
+            ownerUserName=cucm_user_lower
+        )
+
+
+
 
     index += 1
 
