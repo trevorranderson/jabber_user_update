@@ -20,8 +20,8 @@ disable_warnings(InsecureRequestWarning)
 ## USER INPUT FOR CUCM
 
 host = input("Publisher IP: ")
-username = input("Username: ")
-password = getpass("Password: ")
+username = "axladmin"
+password = "axlpassword"
 impquestion = input("Enable IMP? (Yes or No): ")
 impanswer = impquestion.upper()
 versionquestion = input("Version (xx.x): ")
@@ -111,9 +111,12 @@ while index < len(user_import_data.index):
     except:
         pass       
     index += 1
-    if index > len(user_import_data.index):
-        print("DN's are complete.")
 
+print("DNs Are Complete")
+
+print("Starting Device Creation")
+
+time.sleep(5)
 
 ## CHECK IF DEVICE EXISTS
 
@@ -133,15 +136,18 @@ while index < len(user_import_data.index):
     else:
         print("Please select an applicable Device Type. ALL CAPS is needed.")
 
-    cucm_device_test = "Null"
     try:
         cucm_device_test = service.getPhone(name=cucm_device_name)
+        cucm_device_name_return = cucm_device_test['return']['phone']['name']
+        cucm_device_lower = str(cucm_device_name_return).lower()
     except:
-        pass
+        cucm_device_lower = "null"  
 
+    cucm_device_name_lower = str(cucm_device_name).lower()
+    
     ## IF DEVICE DOES NOT EXIST == CREATE
 
-    if cucm_device_test == "Null" or cucm_device_test['return']['phone']['name'] != cucm_device_name:
+    if cucm_device_lower == "null" or cucm_device_lower != cucm_device_name_lower:
         
         print(cucm_device_name + " was not found. Device will be created.")
         
@@ -345,33 +351,34 @@ while index < len(user_import_data.index):
 
     index += 1
 
-    ## IF DEVICE EXISTS == SKIP
-
-
+    ## IF DEVICE EXISTS == UPDATE DN
     
+print("Devices Are Complete")
+
+print("Starting User Creation")
+
+time.sleep(5)
+
 ## CHECK IF USER EXISTS
 
 
 index = 0
 
-print("Devices Complete")
 
 while index < len(user_import_data.index):
-    cucm_user = "Null"
     
     try:
         cucm_user = service.getUser(userid=user_import_data.at[index, 'USER'])
+        cucm_user_id = cucm_user['return']['user']['userid']
+        cucm_user_lower = str(cucm_user_id).lower()
     except:
-        pass
+        cucm_user = "Null"
 
-    cucm_user_upper = cucm_user.upper()
-
-    
- 
+    spreadsheet_user_lower = str(user_import_data.at[index, 'USER']).lower()
 
     ## IF USER DOES NOT EXIST == CREATE
         
-    if cucm_user_upper == "NULL" or cucm_user['return']['user']['userid'] != user_import_data.at[index, 'USER'] :
+    if cucm_user == "Null" or cucm_user_lower != spreadsheet_user_lower :
         print(user_import_data.at[index, 'USER'] + " could not be found. User will be created.")
 
         ## ADD USER FOR DESKTOP      
@@ -399,10 +406,10 @@ while index < len(user_import_data.index):
                 'presenceGroupName': 'Standard Presence Group',
                 'associatedDevices': associated_device,
                     }
-            try:
-                service.addUser(end_user)
-            except:
-                print("User " + userid + " failed to add. Check spreadsheet.")
+
+            service.addUser(end_user)
+
+
 
             if impanswer == "YES":
                 service.updateUser(
@@ -413,7 +420,7 @@ while index < len(user_import_data.index):
             else:
                 service.updateUser(
                 userid = user_import_data.at[index, 'USER'],
-                homeCluster= False,
+                homeCluster= True,
                 imAndPresenceEnable = False, 
                 associatedGroups=jabber_user)
         
@@ -443,10 +450,7 @@ while index < len(user_import_data.index):
                 'associatedDevices': associated_device
                     }
  
-            try:
-                service.addUser(end_user)
-            except:
-                print("User " + userid + " failed to add. Check spreadsheet.")
+            service.addUser(end_user)
 
             if impanswer == "YES":
                 service.updateUser(
@@ -567,17 +571,26 @@ index = 0
 
 print("User Creation Complete")
 
+print("Starting User Update")
+
+time.sleep(5)
+
 while index < len(user_import_data.index):
 
-    cucm_user = "Null"
     try:
         cucm_user = service.getUser(userid=user_import_data.at[index, 'USER'])
+        cucm_user_lower = str(cucm_user['return']['user']['userid']).lower()
+        spreadsheet_user_lower = str(user_import_data.at[index, 'USER']).lower() 
     except:
-        pass    
+        cucm_user_lower = "null"
+
+    spreadsheet_user_lower = str(user_import_data.at[index, 'USER']).lower() 
+
+   
     
     #print(cucm_user)
 
-    if cucm_user['return']['user']['userid'] == user_import_data.at[index, 'USER']:
+    if cucm_user_lower == spreadsheet_user_lower:
         cucm_device_name = ""
         if user_import_data.at[index, 'DEVICETYPE'] == 'DESKTOP':
             cucm_device_name = "CSF" + user_import_data.at[index, 'DEVICENAME']
@@ -616,14 +629,14 @@ while index < len(user_import_data.index):
         
         if impanswer == "YES":
             service.updateUser(
-                userid = user_import_data.at[index, 'USER'], 
+                userid = cucm_user_lower, 
                 associatedDevices=associated_device,
                 homeCluster= True,
                 imAndPresenceEnable = True,
                 associatedGroups=jabber_user)
         else:
             service.updateUser(
-                userid = user_import_data.at[index, 'USER'], 
+                userid = cucm_user_lower, 
                 associatedDevices=associated_device,
                 homeCluster= True,
                 imAndPresenceEnable = False,
@@ -634,4 +647,4 @@ while index < len(user_import_data.index):
 
 print("Success!")
 
-time.sleep(30)
+#time.sleep(30)
