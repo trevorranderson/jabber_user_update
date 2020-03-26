@@ -1,4 +1,4 @@
-from zeep import Client
+from zeep import Client, Settings
 from zeep.cache import SqliteCache
 from zeep.transports import Transport
 from zeep.exceptions import Fault
@@ -53,7 +53,8 @@ session.auth = HTTPBasicAuth(username, password)
 
 transport = Transport(cache=SqliteCache(), session=session, timeout=20)
 history = HistoryPlugin()
-client = Client(wsdl=wsdl, transport=transport, plugins=[history])
+settings = Settings(strict=False)
+client = Client(wsdl=wsdl, transport=transport, plugins=[history], settings=settings)
 service = client.create_service(binding, location)
 
 ## IMPORT FROM USER_IMPORT.xlsx
