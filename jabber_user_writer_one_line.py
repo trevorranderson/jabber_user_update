@@ -588,7 +588,7 @@ print("Starting User Update")
 
 #time.sleep(5)
 
-print("Updating Owner User ID")
+#print("Updating Owner User ID")
 
 while index < len(user_import_data.index):
 
@@ -601,10 +601,6 @@ while index < len(user_import_data.index):
 
     spreadsheet_user_lower = str(user_import_data.at[index, 'USER']).lower() 
 
-   
-    
-    #print(cucm_user)
-
     if cucm_user_lower == spreadsheet_user_lower:
         cucm_device_name = ""
         if user_import_data.at[index, 'DEVICETYPE'] == 'DESKTOP':
@@ -615,6 +611,7 @@ while index < len(user_import_data.index):
             cucm_device_name = "TCT" + user_import_data.at[index, 'DEVICENAME']
         elif user_import_data.at[index, 'DEVICETYPE'] == 'ANDROID':
             cucm_device_name = "BOT" + user_import_data.at[index, 'DEVICENAME']
+        
         
         associated_device = {
            'device': []
@@ -628,43 +625,43 @@ while index < len(user_import_data.index):
         if current_devices != "":
             for device in current_devices:
                 current_device = str(device)
-                associated_device['device'].append(current_device)
- 
-        #Add our new device to the associated device list
+                associated_device['device'].append(current_device)       
 
-        associated_device['device'].append(cucm_device_name)
-
-
-        jabber_user = {
-            'userGroup': ['Standard CTI Enabled', 'Standard CCM End Users', 'Standard CTI Allow Control of All Devices']
-        }
-
-        #print(user_import_data.at[index, 'USER'] + " was already in CUCM. User will be updated with device and roles.")
-
+        associated_device['device'].append(cucm_device_name) #Add our new device to the associated device list
         
+        associated_Groups = {
+            'userGroup': []
+            }
+        try:
+            current_groups = cucm_user['return']['user']['associatedGroups']['userGroup']
+        except:
+            current_groups = ""
+        if current_groups != "":
+            for group in current_groups:
+                current_group = group
+                associated_Groups['userGroup'].append(group)
+
+        associated_Groups['userGroup'].append('Standard CTI Enabled')
+        associated_Groups['userGroup'].append('Standard CCM End Users')
+        associated_Groups['userGroup'].append('Standard CTI Allow Control of All Devices')
+
+        print(user_import_data.at[index, 'USER'] + " was already in CUCM. User will be updated with device and roles.")
+
         if impanswer == "YES":
             service.updateUser(
-                userid = cucm_user_lower, 
-                associatedDevices=associated_device,
-                homeCluster= True,
-                imAndPresenceEnable = True,
-                associatedGroups=jabber_user)
+            userid = cucm_user_lower,
+            associatedDevices=associated_device,
+            homeCluster= True,
+            imAndPresenceEnable = True,
+            associatedGroups=associated_Groups)
         else:
             service.updateUser(
-                userid = cucm_user_lower, 
-                associatedDevices=associated_device,
-                homeCluster= True,
-                imAndPresenceEnable = False,
-                associatedGroups=jabber_user)
+            userid = cucm_user_lower,
+            associatedDevices=associated_device,
+            homeCluster= True,
+            imAndPresenceEnable = False,
+            associatedGroups=associated_Groups)
 
-        ## UPDATE PHONE WITH OWNER USER ID
-
-        #print("Updating Owner User ID")
-
-        service.updatePhone(
-            name=cucm_device_name,
-            ownerUserName=cucm_user_lower
-        )
 
 
     index += 1
